@@ -249,13 +249,15 @@ function nato1() {
 
 
 
-
         scene.onHitWall(SpriteKind.Player, function(sprite: Sprite, location: tiles.Location) {
-            if (location == tiles.getTileLocation(26, 1)) {
+
+
+            if (tiles.tileImageAtLocation(location) ==  assets.tile`myTile16`) {
 
                 tiles.setTileAt(location, assets.tile`myTile17`)
 
-                
+                scene.centerCameraAt(400,650)
+
                 tiles.setWallAt(tiles.getTileLocation(24, 40), false)
                 tiles.setWallAt(tiles.getTileLocation(25, 40), false)
                 tiles.setWallAt(tiles.getTileLocation(26, 40), false)
@@ -274,6 +276,8 @@ function nato1() {
             color.setColor(10, color.rgb(0, 0, 0))
             tiles.setWallAt(tiles.getTileLocation(34, 51), true)
         })
+
+        // tripwire script
         scene.onOverlapTile(SpriteKind.Player, assets.tile`nato1 tripwire`, function (sprite: Sprite, location: tiles.Location) {
             sprites.destroy(knudsen)
             scene.cameraShake(4, 3000)
