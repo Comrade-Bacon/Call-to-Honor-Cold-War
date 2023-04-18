@@ -226,29 +226,14 @@ function nato1() {
         tiles.placeOnTile(knudsen, tiles.getTileLocation(2, 2))
         
         
-        controller.B.onEvent(ControllerButtonEvent.Pressed, function() {
-            
-            let num = 0
-            let num2 = 0
-            let going = true
+        // work in progress
+        while (true){
+            let arrow = sprites.create(assets.image`up shoot arrow`)
+            tiles.placeOnTile(arrow, tiles.getTileLocation(0, 0))
+            arrow.setVelocity(0,100)
+        }
 
-            while (going == true) {
-                tiles.setWallAt(tiles.getTileLocation(num, num2), false)
-
-                num += 1
-                if (num == 200) {
-                    num = 0
-                    num2 += 1
-                    if (num2 == 200) {
-                        going = false
-                        tiles.setWallAt(tiles.getTileLocation(26, 1), true)
-                    }
-                }
-            }
-        })
-
-
-
+        // wall lever
         scene.onHitWall(SpriteKind.Player, function(sprite: Sprite, location: tiles.Location) {
 
 
@@ -262,16 +247,40 @@ function nato1() {
                 tiles.setWallAt(tiles.getTileLocation(25, 40), false)
                 tiles.setWallAt(tiles.getTileLocation(26, 40), false)
 
-                tiles.setTileAt(tiles.getTileLocation(24, 40), assets.tile`myTile23`)
-                tiles.setTileAt(tiles.getTileLocation(25, 40), assets.tile`myTile23`)
-                tiles.setTileAt(tiles.getTileLocation(26, 40), assets.tile`myTile23`)
+                timer.after(700, function() {
+                    tiles.setTileAt(tiles.getTileLocation(24, 40), assets.tile`myTile23`)
+                    scene.cameraShake(4, 400)
+                    
+                    timer.after(700, function () {
+                        tiles.setTileAt(tiles.getTileLocation(25, 40), assets.tile`myTile23`)
+                        scene.cameraShake(4, 400)
+                        
+                        timer.after(700, function () {
+                            tiles.setTileAt(tiles.getTileLocation(26, 40), assets.tile`myTile23`)
+                            scene.cameraShake(4, 400)
+
+                            timer.after(720, function () {
+                                scene.cameraFollowSprite(knudsen)
+                            })
+                        })
+                    })
+
+                })
+                
+
+              
+
 
             }
         })
 
+
+        // when the player goes into the tunnel
         scene.onOverlapTile(SpriteKind.Player, assets.tile`brick tunnel entrance`, function(sprite: Sprite, location: tiles.Location) {
             color.setColor(10, color.rgb(145, 70, 61))
         })
+
+        // when the player exits the tunnel
         scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile32`, function (sprite: Sprite, location: tiles.Location) {
             color.setColor(10, color.rgb(0, 0, 0))
             tiles.setWallAt(tiles.getTileLocation(34, 51), true)
@@ -305,14 +314,11 @@ function nato1() {
             }
             sprites.destroyAllSpritesOfKind(SpriteKind.Player, effects.fire, 2000)
 
-timer.after(3000, function() {
-    game.over(false)
-})
-
-
-
-
+            timer.after(3000, function() {
+            game.over(false)
         })
+
+    })
 
     }
 }
