@@ -6,13 +6,20 @@
 // set up new sprite kinds:
 namespace SpriteKind {
     export const Button = SpriteKind.create() // set up button sprite kind
+    export const Arrow = SpriteKind.create()
 }
 
 // Variable set up:
 
-// System Variables:
-let tnato = false // if on team NATO
-let twarsaw_Pact = false // if on tram Warsaw Pact
+    // System Variables:
+let tnato: boolean = false // if on team NATO
+let twarsaw_Pact: boolean = false // if on tram Warsaw Pact
+
+let dificulty: number = 1 
+
+difclt() {
+    if (story.getLastAnswer() == )
+}  
 
 
 // main menue set up:
@@ -75,6 +82,9 @@ function mainMenue() {
                 sprites.destroyAllSpritesOfKind(SpriteKind.Button)
                 sprites.destroyAllSpritesOfKind(SpriteKind.Player)
                 sprites.destroyAllSpritesOfKind(SpriteKind.Text)
+                story.printText("Select dificulty", 50, 50)
+                story.showPlayerChoices("Can I hold your hand?", "This is gonna hurt...", "Bring on the hate!")
+                difclt()
                 nato1()
             }
         })
@@ -219,19 +229,43 @@ function nato1() {
 
         tiles.setCurrentTilemap(tilemap`level2`)
 
+        // player setup
         sprites.destroyAllSpritesOfKind(SpriteKind.Player)
         let knudsen = sprites.create(assets.image`Green man 1`, SpriteKind.Player)
         controller.moveSprite(knudsen, 100, 100)
         scene.cameraFollowSprite(knudsen)
         tiles.placeOnTile(knudsen, tiles.getTileLocation(2, 2))
-        
-        
-        // work in progress
-        while (true){
-            let arrow = sprites.create(assets.image`up shoot arrow`)
-            tiles.placeOnTile(arrow, tiles.getTileLocation(0, 0))
-            arrow.setVelocity(0,100)
-        }
+
+        let arrowsGoing: boolean = true
+        let arrowDelay = 400
+        let arrowVlsty = 200
+
+        // arrow shooters
+        timer.background(function() {
+            while (arrowsGoing == true) {
+                
+                let arrow = sprites.create(assets.image`up shoot arrow`, SpriteKind.Arrow)
+                tiles.placeOnTile(arrow, tiles.getTileLocation(38, 23))
+                arrow.setVelocity(0, -arrowVlsty)
+                
+                pause(arrowDelay)
+                arrow.destroy()
+
+                let arrow2 = sprites.create(assets.image`down shoot arrow`, SpriteKind.Arrow)
+                tiles.placeOnTile(arrow2, tiles.getTileLocation(36, 19))
+                arrow2.setVelocity(0, arrowVlsty)
+
+                let arrow3 = sprites.create(assets.image`down shoot arrow`, SpriteKind.Arrow)
+                tiles.placeOnTile(arrow3, tiles.getTileLocation(40, 19))
+                arrow3.setVelocity(0, arrowVlsty)
+
+                pause(arrowDelay)
+                arrow2.destroy()
+                arrow3.destroy()
+
+            }
+        })
+
 
         // wall lever
         scene.onHitWall(SpriteKind.Player, function(sprite: Sprite, location: tiles.Location) {
@@ -268,9 +302,9 @@ function nato1() {
                 })
                 
 
-              
-
-
+            } else if (tiles.tileImageAtLocation(location) == assets.tile`Arrow Lever`) {
+                tiles.setTileAt(location, assets.tile`myTile17`)
+                arrowsGoing = false
             }
         })
 
