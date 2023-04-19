@@ -1,6 +1,5 @@
 
 
-
 // setup:
 
 // set up new sprite kinds:
@@ -17,10 +16,25 @@ let twarsaw_Pact: boolean = false // if on tram Warsaw Pact
 
 let dificulty: number = 1 
 
-difclt() {
-    if (story.getLastAnswer() == )
-}  
+// function to determen the current difficulty
+function difclt() {
 
+    story.printText("Select dificulty", 60, 50)
+    story.showPlayerChoices("Can I hold you'r hand?", "I got this.", "Bring on the hate!")
+
+    if (story.getLastAnswer() == "Can I hold you'r hand?") {
+        dificulty = 1
+        console.log('difficulty = 1')
+    } else if (story.getLastAnswer() == 'I got this.') {
+        dificulty = 2
+        console.log('difficulty = 2')
+    } else if (story.getLastAnswer() == 'Bring on the hate!'){
+        dificulty = 3
+        console.log('difficulty = 3')
+    } else {
+        console.log('Error 404.1: Unkown dificulty')
+    }
+}  
 
 // main menue set up:
 function mainMenue() {
@@ -82,8 +96,6 @@ function mainMenue() {
                 sprites.destroyAllSpritesOfKind(SpriteKind.Button)
                 sprites.destroyAllSpritesOfKind(SpriteKind.Player)
                 sprites.destroyAllSpritesOfKind(SpriteKind.Text)
-                story.printText("Select dificulty", 50, 50)
-                story.showPlayerChoices("Can I hold your hand?", "This is gonna hurt...", "Bring on the hate!")
                 difclt()
                 nato1()
             }
@@ -110,12 +122,15 @@ function mainMenue() {
     let warsaw_Pact = sprites.create(assets.image`Warsaw Pact`, SpriteKind.Button)
     nato.setPosition(40, 50)
     warsaw_Pact.setPosition(110, 50)
+    
     let textSprite1 = textsprite.create('Select Team', 12, 1)
     textSprite1.setKind(SpriteKind.Text)
     textSprite1.setPosition(80, 10)
+    
     let textSprite2 = textsprite.create('NATO', 12, 1)
     textSprite2.setKind(SpriteKind.Text)
     textSprite2.setPosition(40, 85)
+
     let textSprite3 = textsprite.create('Warsaw Pact', 12, 1)
     textSprite3.setKind(SpriteKind.Text)
     textSprite3.setPosition(110, 85)
@@ -144,10 +159,9 @@ function nato1() {
     let inSpikes = false
 
     game.showLongText(`The year is 1969 and it is the hight of the Vietnamese War.
+    You are a Green Beret (SF) Sargent named Maxton Knudsen. Your current mission is to infultrate a near by guerilla camp, steel information on their next attack, and get out alive.
     
-    You are a Green Beret Sargent named Maxton Knudsen. Your current mission is to infultrate a near by guerilla camp, steel information on their next attack, and get out alive.
-    
-    good luck, an De Oppresso Liber! (To free the opresed (The Green berets motto))`, DialogLayout.Full)
+    good luck, an De Oppresso Liber! (To free the opresed (The Green Berets motto))`, DialogLayout.Full)
 
 
     color.setPalette(color.Arcade)
