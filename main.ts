@@ -40,22 +40,26 @@ function plrHlthOff () {
 }
 
 statusbars.onZero(StatusBarKind.Health, function(status: StatusBarSprite) {
+    plrHlthOff()
 
-
-    story.showPlayerChoices('Replay', 'Team menue', 'Team select')
-    if (story.getLastAnswer() == 'Replay') {
-        if (level > 2) {
-            nato1()
-        }
-    } else if (story.getLastAnswer() == 'Team menue') {
-        if (tnato == true) {
-            natoMenue()
+    tileUtil.unloadTilemap()
+    timer.after(100, function() {
+        story.showPlayerChoices('Replay', 'Team menue', 'Team select')
+        if (story.getLastAnswer() == 'Replay') {
+            if (level > 2) {
+                nato1()
+            }
+        } else if (story.getLastAnswer() == 'Team menue') {
+            if (tnato == true) {
+                natoMenue()
+            } else {
+                warsaw_Pact_Menue()
+            }
         } else {
-            warsaw_Pact_Menue()
+            mainMenue()
         }
-    } else {
-        mainMenue()
-    }
+
+    })
 
 })
 
@@ -93,6 +97,7 @@ function difclt() {
 // main menue set up:
 function mainMenue() {
 
+    color.setPalette(color.originalPalette)
     scene.setBackgroundColor(12)
 
     let nato = sprites.create(assets.image`NATO`, SpriteKind.Button)
@@ -227,6 +232,7 @@ function nato1() {
 
 
         color.setPalette(color.Arcade)
+        tileUtil.createSmallMap(tilemap` `)
         tiles.setCurrentTilemap(tilemap`NATO1 TileMap`)
 
         game.splash('Part 1: Find the Camp')
@@ -243,24 +249,26 @@ function nato1() {
         scene.onOverlapTile(SpriteKind.Player, assets.tile`Poop Stick Spawn tile`, function (sprite: Sprite, location: tiles.Location) {
             if (inSpikes == false) {
                 inSpikes = true
-                healthBar.value -= 40
-                tiles.placeOnTile(knudsen, location)
-                tiles.setTileAt(location, assets.tile`Poop Stick Tile`)
-                controller.moveSprite(knudsen, 0, 0)
+                healthBar.value -= 35
 
-                timer.background(function () {
+                if (healthBar.value > 0) {
+                    tiles.placeOnTile(knudsen, location)
+                    tiles.setTileAt(location, assets.tile`Poop Stick Tile`)
+                    controller.moveSprite(knudsen, 0, 0)
 
-                    story.spriteSayText(knudsen, 'Ahh! Poop Sticks!')
-                })
+                    timer.background(function () {
+                        story.spriteSayText(knudsen, 'Ahh! Poop Sticks!')
+                    })
 
 
-                timer.debounce("action", 1000, function () {
+                    timer.debounce("action", 1000, function () {
 
-                    controller.moveSprite(knudsen, 100, 100)
+                        controller.moveSprite(knudsen, 100, 100)
 
-                    pause(3000)
-                    inSpikes = false
-                })
+                        pause(3000)
+                        inSpikes = false
+                    })
+                }
 
             }
         })
@@ -275,19 +283,21 @@ function nato1() {
 
                 healthBar.value -= 35
 
-                tiles.placeOnTile(knudsen, location)
-                controller.moveSprite(knudsen, 0, 0)
+                if (healthBar.value > 0) {
+                    tiles.placeOnTile(knudsen, location)
+                    controller.moveSprite(knudsen, 0, 0)
 
-                timer.background(function () {
-                    story.spriteSayText(knudsen, 'AGH! Not again!')
+                    timer.background(function () {
+                        story.spriteSayText(knudsen, 'AGH! Not again!')
 
-                })
+                    })
 
-                timer.after(1000, function () {
-                    controller.moveSprite(knudsen, 100, 100)
-                    pause(3000)
-                    inSpikes = false
-                })
+                    timer.after(1000, function () {
+                        controller.moveSprite(knudsen, 100, 100)
+                        pause(3000)
+                        inSpikes = false
+                    })
+                }
             }
         })
         scene.onOverlapTile(SpriteKind.Player, assets.tile`NATO 1 Cave`, function (sprite: Sprite, location: tiles.Location) {
@@ -352,7 +362,7 @@ function nato1() {
 
                 tiles.setTileAt(location, assets.tile`myTile17`)
 
-                scene.centerCameraAt(400, 650)
+                tileUtil.centerCameraOnTile(tiles.getTileLocation(25, 40))
 
                 tiles.setWallAt(tiles.getTileLocation(24, 40), false)
                 tiles.setWallAt(tiles.getTileLocation(25, 40), false)

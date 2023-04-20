@@ -204,6 +204,10 @@ namespace myTiles {
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 `, [myTiles.transparency16], TileScale.Sixteen);
+            case "blank0":
+            case "level4":return tiles.createTilemap(hex`0100010000`, img`
+. 
+`, [myTiles.transparency16], TileScale.Sixteen);
         }
         return null;
     })
