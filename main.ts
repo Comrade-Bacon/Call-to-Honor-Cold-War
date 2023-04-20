@@ -16,6 +16,17 @@ let twarsaw_Pact: boolean = false // if on tram Warsaw Pact
 
 let dificulty: number = 1 
 
+
+let healthBar = statusbars.create(20, 4, StatusBarKind.Health)
+healthBar.setColor(0, 0)
+
+healthBar.positionDirection(CollisionDirection.Top)
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Arrow, function (sprite: Sprite, otherSprite: Sprite) {
+    console.log(otherSprite)
+    otherSprite.destroy()
+    healthBar.value -= 35
+})
+
 // function to determen the current difficulty
 function difclt() {
 
@@ -169,10 +180,9 @@ function nato1() {
 
     game.splash('Part 1: Find the Camp')
 
-    let healthBar = statusbars.create(20, 4, StatusBarKind.Health)
 
-    healthBar.positionDirection(CollisionDirection.Top)
     healthBar.setLabel('HP', 1)
+    healthBar.setColor(7, 2)
 
 
 
@@ -257,6 +267,8 @@ function nato1() {
         // arrow shooters
         timer.background(function() {
             while (arrowsGoing == true) {
+
+
                 
                 let arrow = sprites.create(assets.image`up shoot arrow`, SpriteKind.Arrow)
                 tiles.placeOnTile(arrow, tiles.getTileLocation(38, 23))
@@ -279,6 +291,7 @@ function nato1() {
 
             }
         })
+
 
 
         // wall lever
