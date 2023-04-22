@@ -53,6 +53,8 @@ function plrHlthOff () {
 }
 
 statusbars.onZero(StatusBarKind.Health, function (status: StatusBarSprite) {
+    color.setPalette(color.originalPalette)
+    scene.setBackgroundColor(12)
     healthBar.value = 100
     plrHlthOff()
     destroyAll()
@@ -61,7 +63,8 @@ statusbars.onZero(StatusBarKind.Health, function (status: StatusBarSprite) {
     timer.after(100, function() {
         story.showPlayerChoices('Replay', 'Team menue', 'Team select')
         if (story.getLastAnswer() == 'Replay') {
-            if (level > 2) {
+            if (level < 2) {
+                console.log('step 1')
                 nato1()
             }
         } else if (story.getLastAnswer() == 'Team menue') {
@@ -88,7 +91,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Arrow, function (sprite: Sprite,
 // function to determen the current difficulty
 function difclt() {
 
-    story.printText("Select dificulty", 60, 50)
+    story.printText("Select dificulty", 80, 50)
     story.showPlayerChoices("Can I hold you'r hand?", "I got this.", "Bring on the hate!")
 
     if (story.getLastAnswer() == "Can I hold you'r hand?") {
@@ -241,8 +244,10 @@ function mainMenue() {
 
 // execution set up
 function nato1() {
+    console.log(level)
 
-    if (level < 1) {
+    if (level <= 1) {
+        console.log('step 2')
         nato1_part1()
     } else if (level == 1.2) {
         nato1_part2()
@@ -260,13 +265,11 @@ function nato1() {
 
 
         color.setPalette(color.Arcade)
-        tileUtil.createSmallMap(tilemap` `)
         tiles.setCurrentTilemap(tilemap`NATO1 TileMap`)
 
         game.splash('Part 1: Find the Camp')
 
         plrHlth()
-
 
 
         let knudsen = sprites.create(assets.image`Green man 1`, SpriteKind.Player)
@@ -296,6 +299,8 @@ function nato1() {
                         pause(3000)
                         inSpikes = false
                     })
+                } else {
+                    inSpikes = false
                 }
 
             }
@@ -335,6 +340,9 @@ function nato1() {
     }
 
     function nato1_part2() {
+
+        plrHlth()
+
         level = 1.2
 
         color.setColor(10, color.rgb(0, 0, 0))
@@ -348,7 +356,7 @@ function nato1() {
         scene.cameraFollowSprite(knudsen)
         tiles.placeOnTile(knudsen, tiles.getTileLocation(2, 2))
 
-
+        arrowsGoing = true
         let arrowDelay = 400
         let arrowVlsty = 200
 
@@ -422,7 +430,6 @@ function nato1() {
                 arrowsGoing = false
             }
         })
-
 
         // when the player goes into the tunnel
         scene.onOverlapTile(SpriteKind.Player, assets.tile`brick tunnel entrance`, function (sprite: Sprite, location: tiles.Location) {
