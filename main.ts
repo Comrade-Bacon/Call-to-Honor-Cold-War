@@ -12,10 +12,13 @@ namespace SpriteKind {
 
     // System Variables:
 let tnato: boolean = false // if on team NATO
-let twarsaw_Pact: boolean = false // if on tram Warsaw Pact
+let twarsaw_Pact: boolean = false //  if on tram Warsaw Pact
 
 let dificulty: number = 0 // hold the level of dificulty
 let level: number = 0 // hold what level and part the player is on
+
+let arrowsGoing: boolean = true
+
 
 
 // system setup:
@@ -24,8 +27,18 @@ let level: number = 0 // hold what level and part the player is on
 let healthBar = statusbars.create(20, 4, StatusBarKind.Health)
 healthBar.setColor(0, 0)
 healthBar.positionDirection(CollisionDirection.Top)
+healthBar.value = 100
 
 let plrHlthBar: boolean = false
+
+function destroyAll(){
+    sprites.destroyAllSpritesOfKind(SpriteKind.Button)
+    sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+    sprites.destroyAllSpritesOfKind(SpriteKind.Text)
+    sprites.destroyAllSpritesOfKind(SpriteKind.Arrow)
+    arrowsGoing = false
+}
+
 
 function plrHlth() {
     healthBar.setLabel('HP', 1)
@@ -39,9 +52,11 @@ function plrHlthOff () {
     plrHlthBar = false
 }
 
-statusbars.onZero(StatusBarKind.Health, function(status: StatusBarSprite) {
+statusbars.onZero(StatusBarKind.Health, function (status: StatusBarSprite) {
+    healthBar.value = 100
     plrHlthOff()
-
+    destroyAll()
+    scene.centerCameraAt(0, 0)
     tileUtil.unloadTilemap()
     timer.after(100, function() {
         story.showPlayerChoices('Replay', 'Team menue', 'Team select')
@@ -50,11 +65,7 @@ statusbars.onZero(StatusBarKind.Health, function(status: StatusBarSprite) {
                 nato1()
             }
         } else if (story.getLastAnswer() == 'Team menue') {
-            if (tnato == true) {
-                natoMenue()
-            } else {
-                warsaw_Pact_Menue()
-            }
+            mainMenue()
         } else {
             mainMenue()
         }
@@ -100,6 +111,96 @@ function mainMenue() {
     color.setPalette(color.originalPalette)
     scene.setBackgroundColor(12)
 
+    if (story.getLastAnswer() == 'Team menue' && tnato == true) {
+        natoMenue()
+    } else if (story.getLastAnswer() == 'Team menue' && twarsaw_Pact == true) {
+        warsaw_Pact_Menue()
+    } else {
+        teamSelect()
+    }
+
+    function natoMenue() {
+
+        level = 0
+
+        sprites.destroyAllSpritesOfKind(SpriteKind.Button)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Text)
+
+
+        let setings = sprites.create(assets.image`Settings Gear`, SpriteKind.Button)
+        scaling.scaleToPercent(setings, 150, ScaleDirection.Uniformly, ScaleAnchor.Middle)
+        setings.setPosition(130, 20)
+        let textSprite1 = textsprite.create('Settings', 0, 1)
+        textSprite1.setPosition(130, 35)
+
+        let stl = sprites.create(assets.image`stl`, SpriteKind.Button)
+        scaling.scaleToPercent(stl, 150, ScaleDirection.Uniformly, ScaleAnchor.Middle)
+        stl.setPosition(70, 60)
+        let textSprite2 = textsprite.create('Skip to Level', 0, 1)
+        textSprite2.setPosition(70, 80)
+
+        let playbutn = sprites.create(assets.image`Play`, SpriteKind.Button)
+        scaling.scaleToPercent(playbutn, 150, ScaleDirection.Uniformly, ScaleAnchor.Middle)
+        playbutn.setPosition(130, 60)
+        let textSprite3 = textsprite.create('Play', 0, 1)
+        textSprite3.setPosition(130, 80)
+
+        let abutNATO = sprites.create(assets.image`NATO`, SpriteKind.Button)
+        scaling.scaleToPercent(abutNATO, 60, ScaleDirection.Uniformly, ScaleAnchor.Middle)
+        abutNATO.setPosition(70, 20)
+        let textSprite4 = textsprite.create('About NATO')
+        textSprite4.setPosition(70, 35)
+
+        let bcktomain = sprites.create(assets.image`back arow`, SpriteKind.Button)
+        bcktomain.setPosition(130, 100)
+        let textSprite5 = textsprite.create('Main Menue', 0, 1)
+        textSprite5.setPosition(130, 115)
+
+        let cursor = sprites.create(assets.image`Cursor`, SpriteKind.Player)
+        controller.moveSprite(cursor, 150, 150)
+        cursor.setStayInScreen(true)
+
+        controller.A.onEvent(ControllerButtonEvent.Pressed, function () { // when the a button is presed
+            if (cursor.overlapsWith(bcktomain)) { // if the cursur overlaps with the back button
+                sprites.destroyAllSpritesOfKind(SpriteKind.Button)
+                sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+                sprites.destroyAllSpritesOfKind(SpriteKind.Text)
+                tnato = false
+                mainMenue()
+            } else if (cursor.overlapsWith(abutNATO)) {
+                game.showLongText(`Founded in April of 1949, The North Atlantic Treaty Organization is an organization consisting of The United Stats, Britan, France, Belgum, Canada, Denmark, Iceland, Italy, Luxembourg, the Netherlands, Norway, and Portugal.
+
+                    Greece, Türkiye, Germany, Spain, Czechia, Hungary, Poland, Bulgaria, Estonia, Latvia, Lithuania, Romania, Slovakia, Slovenia, Albania, Croatia, Montenegro, and North Macedonia later joined the organization.
+                
+                NATO was founded to "secure peace in Europe, to promote cooperation among its members and to guard their freedom." or in other words, to collectively defend agenst a Soviet(or any other aggressing nation) invasion.`, DialogLayout.Full)
+            } else if (cursor.overlapsWith(playbutn)) {
+                sprites.destroyAllSpritesOfKind(SpriteKind.Button)
+                sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+                sprites.destroyAllSpritesOfKind(SpriteKind.Text)
+                difclt()
+                nato1()
+            }
+        })
+    
+
+    }
+
+    function warsaw_Pact_Menue() {
+
+        sprites.destroyAllSpritesOfKind(SpriteKind.Button)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Text)
+
+        let setings = sprites.create(assets.image`Settings Gear`, SpriteKind.Button)
+        scaling.scaleToPercent(setings, 150, ScaleDirection.Uniformly, ScaleAnchor.Middle)
+        setings.setPosition(130, 20)
+        let textSprite1 = textsprite.create('Settings', 0, 1)
+        textSprite1.setPosition(130, 35)
+    }
+
+    function teamSelect() {
+
     let nato = sprites.create(assets.image`NATO`, SpriteKind.Button)
     let warsaw_Pact = sprites.create(assets.image`Warsaw Pact`, SpriteKind.Button)
     nato.setPosition(40, 50)
@@ -132,84 +233,11 @@ function mainMenue() {
             warsaw_Pact_Menue()
         }
     })
+    }
 
 }
 
-function natoMenue() {
 
-    sprites.destroyAllSpritesOfKind(SpriteKind.Button)
-    sprites.destroyAllSpritesOfKind(SpriteKind.Player)
-    sprites.destroyAllSpritesOfKind(SpriteKind.Text)
-
-
-    let setings = sprites.create(assets.image`Settings Gear`, SpriteKind.Button)
-    scaling.scaleToPercent(setings, 150, ScaleDirection.Uniformly, ScaleAnchor.Middle)
-    setings.setPosition(130, 20)
-    let textSprite1 = textsprite.create('Settings', 0, 1)
-    textSprite1.setPosition(130, 35)
-
-    let stl = sprites.create(assets.image`stl`, SpriteKind.Button)
-    scaling.scaleToPercent(stl, 150, ScaleDirection.Uniformly, ScaleAnchor.Middle)
-    stl.setPosition(70, 60)
-    let textSprite2 = textsprite.create('Skip to Level', 0, 1)
-    textSprite2.setPosition(70, 80)
-
-    let playbutn = sprites.create(assets.image`Play`, SpriteKind.Button)
-    scaling.scaleToPercent(playbutn, 150, ScaleDirection.Uniformly, ScaleAnchor.Middle)
-    playbutn.setPosition(130, 60)
-    let textSprite3 = textsprite.create('Play', 0, 1)
-    textSprite3.setPosition(130, 80)
-
-    let abutNATO = sprites.create(assets.image`NATO`, SpriteKind.Button)
-    scaling.scaleToPercent(abutNATO, 60, ScaleDirection.Uniformly, ScaleAnchor.Middle)
-    abutNATO.setPosition(70, 20)
-    let textSprite4 = textsprite.create('About NATO')
-    textSprite4.setPosition(70, 35)
-
-    let bcktomain = sprites.create(assets.image`back arow`, SpriteKind.Button)
-    bcktomain.setPosition(130, 100)
-    let textSprite5 = textsprite.create('Main Menue', 0, 1)
-    textSprite5.setPosition(130, 115)
-
-    let cursor = sprites.create(assets.image`Cursor`, SpriteKind.Player)
-    controller.moveSprite(cursor, 150, 150)
-    cursor.setStayInScreen(true)
-
-    controller.A.onEvent(ControllerButtonEvent.Pressed, function () { // when the a button is presed
-        if (cursor.overlapsWith(bcktomain)) { // if the cursur overlaps with the back button
-            sprites.destroyAllSpritesOfKind(SpriteKind.Button)
-            sprites.destroyAllSpritesOfKind(SpriteKind.Player)
-            sprites.destroyAllSpritesOfKind(SpriteKind.Text)
-            tnato = false
-            mainMenue()
-        } else if (cursor.overlapsWith(abutNATO)) {
-            game.showLongText(`Founded in April of 1949, The North Atlantic Treaty Organization is an organization consisting of The United Stats, Britan, France, Belgum, Canada, Denmark, Iceland, Italy, Luxembourg, the Netherlands, Norway, and Portugal.
-
-                    Greece, Türkiye, Germany, Spain, Czechia, Hungary, Poland, Bulgaria, Estonia, Latvia, Lithuania, Romania, Slovakia, Slovenia, Albania, Croatia, Montenegro, and North Macedonia later joined the organization.
-                
-                NATO was founded to "secure peace in Europe, to promote cooperation among its members and to guard their freedom." or in other words, to collectively defend agenst a Soviet(or any other aggressing nation) invasion.`, DialogLayout.Full)
-        } else if (cursor.overlapsWith(playbutn)) {
-            sprites.destroyAllSpritesOfKind(SpriteKind.Button)
-            sprites.destroyAllSpritesOfKind(SpriteKind.Player)
-            sprites.destroyAllSpritesOfKind(SpriteKind.Text)
-            difclt()
-            nato1()
-        }
-    })
-}
-
-function warsaw_Pact_Menue() {
-
-    sprites.destroyAllSpritesOfKind(SpriteKind.Button)
-    sprites.destroyAllSpritesOfKind(SpriteKind.Player)
-    sprites.destroyAllSpritesOfKind(SpriteKind.Text)
-
-    let setings = sprites.create(assets.image`Settings Gear`, SpriteKind.Button)
-    scaling.scaleToPercent(setings, 150, ScaleDirection.Uniformly, ScaleAnchor.Middle)
-    setings.setPosition(130, 20)
-    let textSprite1 = textsprite.create('Settings', 0, 1)
-    textSprite1.setPosition(130, 35)
-}
 
 // execution set up
 function nato1() {
@@ -320,7 +348,7 @@ function nato1() {
         scene.cameraFollowSprite(knudsen)
         tiles.placeOnTile(knudsen, tiles.getTileLocation(2, 2))
 
-        let arrowsGoing: boolean = true
+
         let arrowDelay = 400
         let arrowVlsty = 200
 
