@@ -126,10 +126,7 @@ function mainMenue() {
 
         level = 0
 
-        sprites.destroyAllSpritesOfKind(SpriteKind.Button)
-        sprites.destroyAllSpritesOfKind(SpriteKind.Player)
-        sprites.destroyAllSpritesOfKind(SpriteKind.Text)
-
+        destroyAll()
 
         let setings = sprites.create(assets.image`Settings Gear`, SpriteKind.Button)
         scaling.scaleToPercent(setings, 150, ScaleDirection.Uniformly, ScaleAnchor.Middle)
@@ -166,9 +163,7 @@ function mainMenue() {
 
         controller.A.onEvent(ControllerButtonEvent.Pressed, function () { // when the a button is presed
             if (cursor.overlapsWith(bcktomain)) { // if the cursur overlaps with the back button
-                sprites.destroyAllSpritesOfKind(SpriteKind.Button)
-                sprites.destroyAllSpritesOfKind(SpriteKind.Player)
-                sprites.destroyAllSpritesOfKind(SpriteKind.Text)
+                destroyAll()
                 tnato = false
                 mainMenue()
             } else if (cursor.overlapsWith(abutNATO)) {
@@ -178,9 +173,7 @@ function mainMenue() {
                 
                 NATO was founded to "secure peace in Europe, to promote cooperation among its members and to guard their freedom." or in other words, to collectively defend agenst a Soviet(or any other aggressing nation) invasion.`, DialogLayout.Full)
             } else if (cursor.overlapsWith(playbutn)) {
-                sprites.destroyAllSpritesOfKind(SpriteKind.Button)
-                sprites.destroyAllSpritesOfKind(SpriteKind.Player)
-                sprites.destroyAllSpritesOfKind(SpriteKind.Text)
+                destroyAll()
                 difclt()
                 nato1()
             }
@@ -191,9 +184,7 @@ function mainMenue() {
 
     function warsaw_Pact_Menue() {
 
-        sprites.destroyAllSpritesOfKind(SpriteKind.Button)
-        sprites.destroyAllSpritesOfKind(SpriteKind.Player)
-        sprites.destroyAllSpritesOfKind(SpriteKind.Text)
+        destroyAll()
 
         let setings = sprites.create(assets.image`Settings Gear`, SpriteKind.Button)
         scaling.scaleToPercent(setings, 150, ScaleDirection.Uniformly, ScaleAnchor.Middle)
@@ -345,6 +336,7 @@ function nato1() {
 
         level = 1.2
 
+        color.setPalette(color.Arcade)
         color.setColor(10, color.rgb(0, 0, 0))
 
         tiles.setCurrentTilemap(tilemap`level2`)
